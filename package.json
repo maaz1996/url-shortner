@@ -1,0 +1,32 @@
+{
+  "name": "url-shortner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-promise": "^0.4.0",
+    "express-promise-router": "^3.0.3",
+    "mongoose": "^5.7.5",
+    "morgan": "^1.9.1",
+    "node": "^12.12.0",
+    "nodemon": "^1.19.4",
+    "promise": "^8.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index.js",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maaz1996/url-shortner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maaz1996/url-shortner/issues"
+  },
+  "homepage": "https://github.com/maaz1996/url-shortner#readme"
+}
