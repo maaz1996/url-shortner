@@ -1,6 +1,7 @@
 
 module.exports = {
   JWT_SECRET: 'authentication',
-  port: 3000
+  port: 5000,
+  BaseUrl: "http://localhost:5000"
 
 };

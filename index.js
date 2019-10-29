@@ -9,7 +9,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-db = mongoose.connect('mongodb+srv://root:password@123@dev-i9qmj.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true });
+db = mongoose.connect('mongodb+srv://admin:dbadmin@cluster0-dweca.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true })
 
 // middleware
 app.use(morgan('dev'));
