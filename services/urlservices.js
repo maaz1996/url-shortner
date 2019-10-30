@@ -12,7 +12,7 @@ module.exports = () => {
                 const urlcode = shortid.generate();
                 // console.log(baseurl)
                 if (!validurl.isUri(baseurl)) {
-                    resolve("not valid url")
+                    resolve("Not valid Base url")
                 }
                 if (validurl.isUri(longurl)) {
                     try {
@@ -47,7 +47,27 @@ module.exports = () => {
 
         })
     }
+    const geturlservices = ({ payload }) => {
+        return new Promise(async (resolve, reject) => {
+
+            try {
+                const geturl = await Url.findOne({ urlcode: payload })
+                if (geturl) {
+                    resolve(geturl.longurl)
+                }
+                else {
+                    resolve("No url Found")
+                }
+
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
     return {
-        urlservices
+        urlservices,
+        geturlservices
     }
 };

@@ -9,4 +9,13 @@ module.exports = {
             result: response
         });
     },
+    geturl: async (req, res) => {
+        payload = req.params.code
+
+        const response = await UrlServices.geturlservices({ payload })
+        res.redirect(
+            response
+        );
+    },
+
 }
