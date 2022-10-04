@@ -4,12 +4,34 @@ const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
 const config = require('./config/index');
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useUnifiedTopology', true);
+// mongoose.set('useNewUrlParser', true);
+// mongoose.set('useFindAndModify', false);
+// mongoose.set('useCreateIndex', true);
+// mongoose.set('useUnifiedTopology', true);
 
-db = mongoose.connect('mongodb+srv://admin:dbadmin@cluster0-dweca.mongodb.net/mydb?retryWrites=true&w=majority', { useNewUrlParser: true })
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+// db = mongoose.connect('mongodb+srv://admin:dbpassword@cluster1.hby8ewt.mongodb.net/urlshortner?retryWrites=true&w=majority', { useNewUrlParser: true })
+db = mongoose.connect(
+  `mongodb+srv://${config["dbusername"]}:${config["dbpassword"]}@${config["dbcluster"]}/${config["dbname"]}?retryWrites=true&w=majority`,
+  options,
+  function (error) {
+    if (error) {
+      console.log(error);
+      mongoose.connect(
+        `mongodb://localhost:27017/${config["dbname"]}`,
+        options,
+        function (error) {
+          if (error) console.log(error);
+          else console.log("connected to local mongodb");
+        }
+      );
+    } else console.log("connected to atlas mongo");
+  }
+);
 
 // middleware
 app.use(morgan('dev'));
