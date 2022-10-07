@@ -14,7 +14,6 @@ const options = {
   useUnifiedTopology: true,
 };
 
-// db = mongoose.connect('mongodb+srv://admin:dbpassword@cluster1.hby8ewt.mongodb.net/urlshortner?retryWrites=true&w=majority', { useNewUrlParser: true })
 db = mongoose.connect(
   `mongodb+srv://${config["dbusername"]}:${config["dbpassword"]}@${config["dbcluster"]}/${config["dbname"]}?retryWrites=true&w=majority`,
   options,
