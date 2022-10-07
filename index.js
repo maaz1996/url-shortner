@@ -13,7 +13,7 @@ const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
+//separate configuration needed for db
 db = mongoose.connect(
   `mongodb+srv://${config["dbusername"]}:${config["dbpassword"]}@${config["dbcluster"]}/${config["dbname"]}?retryWrites=true&w=majority`,
   options,
