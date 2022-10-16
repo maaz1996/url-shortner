@@ -46,7 +46,7 @@ app.use(function (req, res, next) {
 app.get("/", (req, res) => {
   res.status(200).send({
     success: true,
-    message: "hello world",
+    message: "Welcome to Url Shortner Service",
   });
 });
 // @Routes /api/v1/url
