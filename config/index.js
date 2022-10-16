@@ -9,4 +9,5 @@ module.exports = {
   dbpassword:process.env.DBPASSWORD,
   dbcluster:process.env.DBCLUSTER,
   dbname:process.env.DBNAME,
+  auth: process.env.AUTHTOKEN
 };
