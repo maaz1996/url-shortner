@@ -44,12 +44,18 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get('/', (req, res) => {
+    res.status(200).send({
+      success: true,
+      message:'hello world'
+    })
+})
 // @Routes /api/v1/url
 const Routes = require('./routes/urlroute');
 app.use('/api/v1', Routes);
 
 
-
-app.listen(config['port'], () => {
-  console.log(`Server listening on port: ${config['port']}`);
+const PORT= config['port'] || 5000
+app.listen(PORT, () => {
+  console.log(`Server listening on port: ${PORT}`);
 });

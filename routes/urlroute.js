@@ -1,10 +1,14 @@
-const router = require("express-promise-router")();
+const express = require('express');
+const router = express.Router();
 const UrlController = require("../controller/urlcontroller");
+// const middleware = require('../config/middlewares/checkauth');
+
+// const auth = 
+
+// router.get('/lead/leadDetails', middleware.auth, middleware.roleAuth, lead.leadDetails);
 
 router
-    .route("/url")
-    .post((req, res, next) => UrlController.url(req, res, next))
+    .post("/url",UrlController.url)
 router
-    .route("/:code")
-    .get((req, res, next) => UrlController.geturl(req, res, next))
+    .get("/:code",UrlController.geturl)
 module.exports = router;
