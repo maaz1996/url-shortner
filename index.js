@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
 const Routes = require("./routes/urlroute");
 app.use("/api/v1", Routes);
 
-const PORT = config["port"] || 5000;
+const PORT = config["port"];
 app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });
