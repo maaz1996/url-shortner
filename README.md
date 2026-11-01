@@ -9,9 +9,9 @@ Requirements: Node.js 20+ and a MongoDB database (MongoDB Atlas works).
 1. Install dependencies with `npm install`.
 2. Copy `.env.example` to `.env` and set `MONGODB_URI` to your database connection string. Keep `.env` private.
 3. Start the app with `npm run dev`.
-4. Open [http://localhost:5001](http://localhost:5001).
+4. Open [http://localhost:5003](http://localhost:5003).
 
-`PORT` is optional and defaults to `5001`. You can also use the legacy Atlas settings `DBUSERNAME`, `DBPASSWORD`, `DBCLUSTER`, and `DBNAME` instead of `MONGODB_URI`. If neither configuration is provided, local development uses `mongodb://127.0.0.1:27017/url-shortner`.
+`PORT` is optional and defaults to `5003`. You can also use the legacy Atlas settings `DBUSERNAME`, `DBPASSWORD`, `DBCLUSTER`, and `DBNAME` instead of `MONGODB_URI`. If neither configuration is provided, local development uses `mongodb://127.0.0.1:27017/url-shortner`.
 
 ## API
 
@@ -22,11 +22,20 @@ Creation accepts only HTTP and HTTPS destinations. Include the scheme explicitly
 
 Link creation is public and anyone who can reach the deployment can create links. For a public service, configure rate limiting or abuse protection at the hosting layer.
 
+## Database by host
+
+The two deployment paths intentionally use separate databases and API entry points:
+
+- **Local and Vercel:** Express (`index.js`) serves the UI and API. Its routes connect through `config/database.js` to MongoDB using `MONGODB_URI` (or the legacy Atlas variables). Local MongoDB is used only when no Atlas configuration is supplied.
+- **Netlify:** Netlify serves the UI from `public/` and routes the API through `netlify/functions/urls.mts`. That function uses the Netlify Database managed Postgres integration through `db/index.ts` and the schema in `db/schema.ts`. It does not use `MONGODB_URI`.
+
+The databases are independent. URLs created on one host do not automatically appear on the other; migrating between hosts requires copying the URL records and codes.
+
+Netlify's function directory is configured in `netlify.toml`. After changing `db/schema.ts`, generate a migration with `npx drizzle-kit generate --name <change_name>`. Run the Netlify version locally with the Netlify CLI using `netlify dev`; it needs the Netlify Database integration context. The regular `npm run dev` command starts Express and uses MongoDB instead.
+
 ## Host on Netlify
 
-The site is set up for Netlify through `netlify.toml`. The web interface is published from `public/`. The API runs as a Netlify Function (`netlify/functions/urls.mts`) at the same `/api/v1/url` and `/api/v1/:code` paths. Links are stored in Netlify Database (managed Postgres). The table is defined in `db/schema.ts`, and migrations in `netlify/database/migrations/` are applied automatically on each deploy, so no database connection string is needed.
-
-After changing `db/schema.ts`, generate a migration with `npx drizzle-kit generate --name <change_name>`. Run the site locally with `netlify dev`.
+Connect the repository to Netlify and enable its Database integration for the site. Netlify publishes `public/` and deploys the function in `netlify/functions/`; the function handles `/api/v1/url` and `/api/v1/:code`. No MongoDB connection string is required for this deployment.
 
 ## Host on Vercel
 
