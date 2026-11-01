@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f2ec" />
+    <meta
+      name="description"
+      content="A simple, self-hosted workspace for making and managing short links."
+    />
+    <title>Shortform - Link workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="wordmark" href="/" aria-label="Shortform home">
+          <span class="wordmark-mark" aria-hidden="true">s.</span>
+          <span>shortform</span>
+        </a>
+        <div class="topbar-meta">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>LINK WORKSPACE</span>
+        </div>
+        <a class="topbar-github" href="https://github.com/maaz1996/url-shortner" target="_blank" rel="noreferrer">
+          PROJECT <span aria-hidden="true">↗</span>
+        </a>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div class="intro-copy">
+            <p class="eyebrow"><span>01</span> YOUR LINKS, IN GOOD SHAPE</p>
+            <h1 id="page-title">Make it<br /><span>short.</span></h1>
+            <p class="intro-note">A little less link. A lot more shareable.</p>
+          </div>
+          <div class="intro-stamp" aria-hidden="true">
+            <span>LONG URL</span>
+            <span class="stamp-line"></span>
+            <span>SHORT URL</span>
+            <span class="stamp-arrow">↘</span>
+          </div>
+        </section>
+
+        <section class="workspace" aria-label="Short link workspace">
+          <div class="composer">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CREATE A LINK <span class="heading-index">/ 001</span></p>
+                <h2>Give it a shorter life.</h2>
+              </div>
+              <span class="heading-symbol" aria-hidden="true">↘</span>
+            </div>
+
+            <form id="shorten-form" novalidate>
+              <label class="field-label" for="long-url">DESTINATION URL</label>
+              <p class="field-hint url-hint">Include http:// or https://.</p>
+              <div class="url-field field-wrap">
+                <input
+                  id="long-url"
+                  name="longurl"
+                  type="url"
+                  inputmode="url"
+                  placeholder="https://example.com/your-page"
+                  autocomplete="url"
+                  required
+                />
+              </div>
+
+              <button class="submit-button" type="submit">
+                <span>Shorten link</span>
+                <span class="button-arrow" aria-hidden="true">↗</span>
+              </button>
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+            </form>
+
+            <div class="result" id="result" hidden>
+              <div class="result-topline">
+                <span class="result-check" aria-hidden="true">✓</span>
+                <span>YOUR SHORT LINK IS READY</span>
+              </div>
+              <div class="result-link-row">
+                <a id="result-link" href="/" target="_blank" rel="noreferrer"></a>
+                <button class="copy-button" id="copy-result" type="button" aria-label="Copy short link">COPY</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="history-panel" aria-labelledby="history-title">
+            <div class="history-header">
+              <div>
+                <p class="eyebrow">ON THIS DEVICE</p>
+                <h2 id="history-title">Recent links<span class="history-count" id="history-count">0</span></h2>
+              </div>
+              <button class="clear-button" id="clear-history" type="button" hidden>Clear</button>
+            </div>
+            <div class="history-list" id="history-list" aria-live="polite"></div>
+            <div class="empty-state" id="empty-state">
+              <span class="empty-mark" aria-hidden="true">↗</span>
+              <p>No links yet.</p>
+              <span>Your latest links will land here.</span>
+            </div>
+            <p class="history-footnote">History is saved in this browser.</p>
+          </aside>
+        </section>
+
+        <footer class="footer">
+          <span>SHORTFORM <span class="footer-year">/ 2026</span></span>
+          <span>ONE GOOD LINK AT A TIME.</span>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

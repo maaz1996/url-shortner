@@ -1,12 +1,10 @@
 const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
-  JWT_SECRET: "authentication",
-  port: 5001,
-  BaseUrl: "http://localhost:5001/api/v1",
+  port: Number(process.env.PORT) || 5001,
+  mongoUri: process.env.MONGODB_URI,
   dbusername: process.env.DBUSERNAME,
   dbpassword: process.env.DBPASSWORD,
   dbcluster: process.env.DBCLUSTER,
-  dbname: process.env.DBNAME,
-  auth: process.env.AUTHTOKEN,
+  dbname: process.env.DBNAME || "url-shortner",
 };

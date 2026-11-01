@@ -1,59 +1,23 @@
 const express = require("express");
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
-const app = express();
-const mongoose = require("mongoose");
+const path = require("path");
 const config = require("./config/index");
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-//separate configuration needed for db
-db = mongoose.connect(
-  `mongodb+srv://${config["dbusername"]}:${config["dbpassword"]}@${config["dbcluster"]}/${config["dbname"]}?retryWrites=true&w=majority`,
-  options,
-  function (error) {
-    if (error) {
-      console.log(error);
-      mongoose.connect(
-        `mongodb://localhost:27017/${config["dbname"]}`,
-        options,
-        function (error) {
-          if (error) console.log(error);
-          else console.log("connected to local mongodb");
-        }
-      );
-    } else console.log("connected to atlas mongo");
-  }
-);
+const app = express();
+app.set("trust proxy", 1);
 
 // middleware
 app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(express.json({ limit: "10kb" }));
+app.use(express.static(path.join(__dirname, "public")));
 
-// CORS Headers
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE,");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+app.use("/api/v1", require("./routes/urlroute"));
+app.use((req, res) => res.status(404).send("Page not found."));
 
-app.get("/", (req, res) => {
-  res.status(200).send({
-    success: true,
-    message: "Welcome to Url Shortner Service",
+if (require.main === module) {
+  app.listen(config.port, () => {
+    console.log(`URL Shortener listening on port ${config.port}`);
   });
-});
-// @Routes /api/v1/url
-const Routes = require("./routes/urlroute");
-app.use("/api/v1", Routes);
+}
 
-const PORT = config["port"];
-app.listen(PORT, () => {
-  console.log(`Server listening on port: ${PORT}`);
-});
+module.exports = app;

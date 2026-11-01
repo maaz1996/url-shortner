@@ -1,26 +1,21 @@
 {
   "name": "url-shortner",
   "version": "1.0.0",
-  "description": "",
+  "description": "A small, self-hosted URL shortener with a web interface.",
   "main": "index.js",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "express": "^4.17.1",
-    "express-promise": "^0.4.0",
-    "express-promise-router": "^3.0.3",
-    "mongoose": "^5.7.5",
-    "mongoose-type-url": "^1.0.6",
-    "morgan": "^1.9.1",
-    "nodemon": "^2.0.20",
-    "promise": "^8.0.3",
-    "shortid": "^2.2.15",
-    "url": "^0.11.0",
-    "valid": "^0.1.1",
-    "valid-url": "^1.0.9"
+    "express": "^4.21.2",
+    "mongoose": "^8.19.1",
+    "morgan": "^1.10.0"
   },
   "scripts": {
-    "test": "node index.js",
-    "start": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "repository": {
     "type": "git",

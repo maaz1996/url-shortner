@@ -1,57 +1,41 @@
-const config = require("../config/index");
-const shortid = require("shortid");
-const validurl = require("valid-url");
+const { randomBytes } = require("crypto");
 const Url = require("../model/urlmodel");
-const urlservices = (payload) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const longurl = payload.longurl;
-      const baseurl = config["BaseUrl"];
-      const urlcode = shortid.generate();
-      // console.log(baseurl)
-      if (!validurl.isUri(baseurl)) {
-        resolve("Not valid Base url");
-      }
-      if (validurl.isUri(longurl)) {
-        try {
-          let URL = await Url.findOne({ longurl });
-          if (URL) {
-            resolve(URL);
-          } else {
-            const shorturl = baseurl + "/" + urlcode;
-            const urlinfo = new Url({
-              longurl,
-              shorturl,
-              urlcode,
-              date: new Date(),
-            });
-            const response = await urlinfo.save();
-            resolve(response);
-          }
-        } catch (error) {
-          reject(error);
-        }
-      } else {
-        resolve("invalid long url");
-      }
-    } catch (error) {
-      reject(error);
-    }
+
+const urlservices = async (payload, baseUrl) => {
+  const longurl = payload?.longurl;
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(longurl);
+  } catch {
+    const error = new Error("Enter a valid URL beginning with http:// or https://.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    const error = new Error("Only HTTP and HTTPS URLs can be shortened.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const existingUrl = await Url.findOne({ longurl });
+  if (existingUrl) {
+    existingUrl.shorturl = `${baseUrl}/${existingUrl.urlcode}`;
+    return existingUrl.save();
+  }
+
+  const urlcode = randomBytes(6).toString("base64url");
+  return Url.create({
+    longurl,
+    shorturl: `${baseUrl}/${urlcode}`,
+    urlcode,
   });
 };
-const geturlservices = (payload) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const geturl = await Url.findOne({ urlcode: payload });
-      if (geturl) {
-        resolve(geturl.longurl);
-      } else {
-        resolve("No url Found");
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
+
+const geturlservices = async (urlcode) => {
+  const url = await Url.findOne({ urlcode });
+  return url?.longurl || null;
 };
 
 module.exports = {
