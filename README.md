@@ -22,6 +22,12 @@ Creation accepts only HTTP and HTTPS destinations. Include the scheme explicitly
 
 Link creation is public and anyone who can reach the deployment can create links. For a public service, configure rate limiting or abuse protection at the hosting layer.
 
+## Host on Netlify
+
+The site is set up for Netlify through `netlify.toml`. The web interface is published from `public/`. The API runs as a Netlify Function (`netlify/functions/urls.mts`) at the same `/api/v1/url` and `/api/v1/:code` paths. Links are stored in Netlify Database (managed Postgres). The table is defined in `db/schema.ts`, and migrations in `netlify/database/migrations/` are applied automatically on each deploy, so no database connection string is needed.
+
+After changing `db/schema.ts`, generate a migration with `npx drizzle-kit generate --name <change_name>`. Run the site locally with `netlify dev`.
+
 ## Host on Vercel
 
 1. Push this repository to GitHub and import it in Vercel as a new project. Vercel detects the Node app from `vercel.json`; no build command or output directory is required.

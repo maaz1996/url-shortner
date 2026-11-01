@@ -4,7 +4,10 @@
   "description": "A small, self-hosted URL shortener with a web interface.",
   "main": "index.js",
   "dependencies": {
+    "@netlify/database": "^2.0.1",
+    "@netlify/functions": "^6.0.3",
     "dotenv": "^16.0.3",
+    "drizzle-orm": "^1.0.0-beta.22",
     "express": "^4.21.2",
     "mongoose": "^8.19.1",
     "morgan": "^1.10.0"
@@ -27,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/maaz1996/url-shortner/issues"
   },
-  "homepage": "https://github.com/maaz1996/url-shortner#readme"
+  "homepage": "https://github.com/maaz1996/url-shortner#readme",
+  "devDependencies": {
+    "drizzle-kit": "^1.0.0-beta.22"
+  }
 }

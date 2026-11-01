@@ -1,0 +1,90 @@
+{
+  "version": "8",
+  "dialect": "postgres",
+  "id": "5d7d6027-5813-49ef-a7e8-0e6e17f62967",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "isRlsEnabled": false,
+      "name": "urls",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "type": "serial",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "urls"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "longurl",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "urls"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "urlcode",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "urls"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "urls"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "urls_pkey",
+      "schema": "public",
+      "table": "urls",
+      "entityType": "pks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "urlcode"
+      ],
+      "nullsNotDistinct": false,
+      "name": "urls_urlcode_key",
+      "schema": "public",
+      "table": "urls",
+      "entityType": "uniques"
+    }
+  ],
+  "renames": []
+}
