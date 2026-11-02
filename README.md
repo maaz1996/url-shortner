@@ -1,49 +1,102 @@
 # Shortform
 
-A small URL shortener built with Express and MongoDB. The web interface and API are served from the same app.
+A lightweight URL shortener with two distinct backend modes:
 
-## Run locally
+- **Local + Vercel:** Express app with MongoDB
+- **Netlify:** Netlify Function with Netlify Database
+
+The app is intentionally split by host so each platform can keep using the database it owns without forcing one deployment mode onto the others.
+
+## 1) Run locally with MongoDB
 
 Requirements: Node.js 20+ and a MongoDB database (MongoDB Atlas works).
 
 1. Install dependencies with `npm install`.
-2. Copy `.env.example` to `.env` and set `MONGODB_URI` to your database connection string. Keep `.env` private.
+2. Copy `.env.example` to `.env` and set `MONGODB_URI` to your MongoDB connection string.
 3. Start the app with `npm run dev`.
-4. Open [http://localhost:5003](http://localhost:5003).
+4. Open `http://localhost:5003` in the browser.
 
-`PORT` is optional and defaults to `5003`. You can also use the legacy Atlas settings `DBUSERNAME`, `DBPASSWORD`, `DBCLUSTER`, and `DBNAME` instead of `MONGODB_URI`. If neither configuration is provided, local development uses `mongodb://127.0.0.1:27017/url-shortner`.
+Notes:
+- `PORT` is optional and defaults to `5003`.
+- If you are using the legacy Atlas variable format instead of `MONGODB_URI`, these environment variables still work: `DBUSERNAME`, `DBPASSWORD`, `DBCLUSTER`, and `DBNAME`.
+- If none are set, the app falls back to `mongodb://127.0.0.1:27017/url-shortner`.
 
-## API
+## 2) API behavior
 
-- `POST /api/v1/url` creates (or returns) a short link. Send JSON `{ "longurl": "https://example.com" }`.
-- `GET /api/v1/:code` redirects to the original URL.
+- `POST /api/v1/url` creates or reuses a short URL.
+- `GET /api/v1/:code` redirects to the original destination.
 
-Creation accepts only HTTP and HTTPS destinations. Include the scheme explicitly; the app does not add HTTPS or rewrite the destination. The browser URL parser validates the input, while the original text is sent to the API without client-side URL encoding. Recent links are saved in that browser's local storage.
+Request example:
 
-Link creation is public and anyone who can reach the deployment can create links. For a public service, configure rate limiting or abuse protection at the hosting layer.
+```json
+{
+  "longurl": "https://example.com/some/page"
+}
+```
 
-## Database by host
+Validation rules:
+- The destination must begin with `http://` or `https://`.
+- The input is not auto-prefixed with `https://`.
+- The browser validates the URL and the server accepts the original string as submitted.
 
-The two deployment paths intentionally use separate databases and API entry points:
+## 3) Database by platform
 
-- **Local and Vercel:** Express (`index.js`) serves the UI and API. Its routes connect through `config/database.js` to MongoDB using `MONGODB_URI` (or the legacy Atlas variables). Local MongoDB is used only when no Atlas configuration is supplied.
-- **Netlify:** Netlify serves the UI from `public/` and routes the API through `netlify/functions/urls.mts`. That function uses the Netlify Database managed Postgres integration through `db/index.ts` and the schema in `db/schema.ts`. It does not use `MONGODB_URI`.
+### Local + Vercel
 
-The databases are independent. URLs created on one host do not automatically appear on the other; migrating between hosts requires copying the URL records and codes.
+- Express app: `index.js`
+- Database adapter: `config/database.js`
+- Database: MongoDB via `MONGODB_URI`
+- Route entry: `routes/urlroute.js`
 
-Netlify's function directory is configured in `netlify.toml`. After changing `db/schema.ts`, generate a migration with `npx drizzle-kit generate --name <change_name>`. Run the Netlify version locally with the Netlify CLI using `netlify dev`; it needs the Netlify Database integration context. The regular `npm run dev` command starts Express and uses MongoDB instead.
+This is the setup used for local development and Vercel deployment.
 
-## Host on Netlify
+### Netlify
 
-Connect the repository to Netlify and enable its Database integration for the site. Netlify publishes `public/` and deploys the function in `netlify/functions/`; the function handles `/api/v1/url` and `/api/v1/:code`. No MongoDB connection string is required for this deployment.
+- Frontend static files: `public/`
+- Serverless API: `netlify/functions/urls.mts`
+- Database adapter: `db/index.ts`
+- Database schema: `db/schema.ts`
+- Database: Netlify Database managed Postgres
 
-## Host on Vercel
+This is the setup used for Netlify, and it does not read `MONGODB_URI`.
 
-1. Push this repository to GitHub and import it in Vercel as a new project. Vercel detects the Node app from `vercel.json`; no build command or output directory is required.
-2. Create a MongoDB Atlas cluster (or use an existing MongoDB server). In Atlas, create a database user and add Vercel's outbound access as permitted by your network-access policy. For a quick initial setup, Atlas supports allowing access from anywhere, but restrict this where possible.
-3. In the Vercel project's **Settings → Environment Variables**, add:
-	- `MONGODB_URI`: the full MongoDB connection string, including the database name.
-4. Apply the variables to the environments you will use, then redeploy the project.
-5. Open the Vercel deployment URL. The short links are generated from that deployment's host; use a custom domain in Vercel if you want branded links.
+Important: the databases are not shared between these environments. URLs created on Netlify do not automatically appear on Vercel or locally, and vice versa.
 
-Do not set `PORT` on Vercel. Link data is stored in MongoDB, so it persists between serverless invocations; recent-link history is local to each browser. Remove any old `AUTHTOKEN` setting from your local or Vercel environment because it is no longer used.
+## 4) Deploy to Netlify
+
+1. Push this repo to GitHub.
+2. In Netlify, choose **Add new site → Import from Git** and connect the repository.
+3. Make sure the root directory is the repository root.
+4. Netlify will use the configured function directory from `netlify.toml` to host `netlify/functions/urls.mts`.
+5. Enable the Netlify Database integration in the project if needed.
+6. Deploy the site.
+
+No `MONGODB_URI` is required for this Netlify deployment path.
+
+## 5) Deploy to Vercel
+
+1. Push this repo to GitHub.
+2. Import the repository in Vercel.
+3. Set the environment variable:
+   - `MONGODB_URI` = full MongoDB connection string, including the database name
+4. Deploy the project.
+5. Use the generated Vercel URL or a custom domain.
+
+Do not set `PORT` on Vercel. The app will use the platform-provided port.
+
+## 6) Notes
+
+- Recent-link history is stored in the browser, not in the database.
+- Link creation is public on any deployment you expose.
+- If you run both Netlify and Vercel, treat them as separate apps with separate data sets.
+- If you edit the Netlify DB schema, generate a migration with:
+
+```bash
+npx drizzle-kit generate --name <change_name>
+```
+
+For local Netlify testing, use:
+
+```bash
+netlify dev
+```
